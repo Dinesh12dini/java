@@ -1,0 +1,127 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+class DrawingPanel extends JPanel {
+    private String shape;
+    private Color color;
+    private int x;
+    private int y;
+    private int size;
+
+    public DrawingPanel() {
+        shape = "Circle";
+        color = Color.BLACK;
+        x = 0;
+        y = 0;
+        size = 50;
+    }
+
+    public void setShape(String shape) {
+        this.shape = shape;
+        repaint();
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
+        repaint();
+    }
+
+    public void setCoordinates(int x, int y) {
+        this.x = x;
+        this.y = y;
+        repaint();
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+        repaint();
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        g.setColor(color);
+        if (shape.equals("Circle")) {
+            g.fillOval(x - size/2, y - size/2, size, size);
+        } else if (shape.equals("Square")) {
+            g.fillRect(x - size/2, y - size/2, size, size);
+        } else if (shape.equals("Triangle")) {
+            int[] xPoints = {x - size/2, x, x + size/2};
+            int[] yPoints = {y + size/2, y - size/2, y + size/2};
+            g.fillPolygon(xPoints, yPoints, 3);
+        }
+    }
+}
+
+public class ShapeDrawingApp {
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Shape Drawing App");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 500);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu shapeMenu = new JMenu("Shape");
+        JMenu colorMenu = new JMenu("Color");
+        JMenuItem circleItem = new JMenuItem("Circle");
+        JMenuItem squareItem = new JMenuItem("Square");
+        JMenuItem triangleItem = new JMenuItem("Triangle");
+        JMenuItem blackItem = new JMenuItem("Black");
+        JMenuItem cyanItem = new JMenuItem("Cyan");
+        JMenuItem magentaItem = new JMenuItem("Magenta");
+        JMenuItem yellowItem = new JMenuItem("Yellow");
+
+        DrawingPanel drawingPanel = new DrawingPanel();
+
+        circleItem.addActionListener(e -> drawingPanel.setShape("Circle"));
+        squareItem.addActionListener(e -> drawingPanel.setShape("Square"));
+        triangleItem.addActionListener(e -> drawingPanel.setShape("Triangle"));
+        blackItem.addActionListener(e -> drawingPanel.setColor(Color.BLACK));
+                cyanItem.addActionListener(e -> drawingPanel.setColor(Color.CYAN));
+        magentaItem.addActionListener(e -> drawingPanel.setColor(Color.MAGENTA));
+        yellowItem.addActionListener(e -> drawingPanel.setColor(Color.YELLOW));
+
+        shapeMenu.add(circleItem);
+        shapeMenu.add(squareItem);
+        shapeMenu.add(triangleItem);
+        colorMenu.add(blackItem);
+        colorMenu.add(cyanItem);
+        colorMenu.add(magentaItem);
+        colorMenu.add(yellowItem);
+        menuBar.add(shapeMenu);
+        menuBar.add(colorMenu);
+
+        frame.setJMenuBar(menuBar);
+        frame.add(drawingPanel, BorderLayout.CENTER);
+
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(4, 2));
+
+        JTextField xField = new JTextField(10);
+        JTextField yField = new JTextField(10);
+        JTextField sizeField = new JTextField(10);
+        JButton changeButton = new JButton("Change");
+
+        changeButton.addActionListener(e -> {
+            int x = Integer.parseInt(xField.getText());
+            int y = Integer.parseInt(yField.getText());
+            int size = Integer.parseInt(sizeField.getText());
+            drawingPanel.setCoordinates(x, y);
+            drawingPanel.setSize(size);
+        });
+
+        inputPanel.add(new JLabel("X: "));
+        inputPanel.add(xField);
+        inputPanel.add(new JLabel("Y: "));
+        inputPanel.add(yField);
+        inputPanel.add(new JLabel("Size: "));
+        inputPanel.add(sizeField);
+        inputPanel.add(new JLabel());
+        inputPanel.add(changeButton);
+
+        frame.add(inputPanel, BorderLayout.EAST);
+
+        frame.setVisible(true);
+    }
+}
